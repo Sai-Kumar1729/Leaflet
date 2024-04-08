@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/MDSS_5.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+          var tagName = event.target.tagName,
+            popup = map._popup;
+          // Also check if flag is already set.
+          if (tagName === "IMG" && popup && !popup._updated) {
+            popup._updated = true; // Set flag to prevent looping.
+            popup.update();
+          }
+        }, true);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_OpenStreetMap_0');
+        map.getPane('pane_OpenStreetMap_0').style.zIndex = 400;
+        var layer_OpenStreetMap_0 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenStreetMap_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OpenStreetMap_0;
+        map.addLayer(layer_OpenStreetMap_0);
+        map.createPane('pane_GW_2020_CLC_1');
+        map.getPane('pane_GW_2020_CLC_1').style.zIndex = 401;
+        var img_GW_2020_CLC_1 = 'data/GW_2020_CLC_1.png';
+        var img_bounds_GW_2020_CLC_1 = [[17.28914897265013,78.23831982343452],[17.563572547676646,78.6226524183833]];
+        var layer_GW_2020_CLC_1 = new L.imageOverlay(img_GW_2020_CLC_1,
+                                              img_bounds_GW_2020_CLC_1,
+                                              {pane: 'pane_GW_2020_CLC_1'});
+        bounds_group.addLayer(layer_GW_2020_CLC_1);
+        map.addLayer(layer_GW_2020_CLC_1);
+        map.createPane('pane_DRA_Den_2');
+        map.getPane('pane_DRA_Den_2').style.zIndex = 402;
+        var img_DRA_Den_2 = 'data/DRA_Den_2.png';
+        var img_bounds_DRA_Den_2 = [[17.28903526248114,78.23817238483504],[17.56350825471314,78.62323726143973]];
+        var layer_DRA_Den_2 = new L.imageOverlay(img_DRA_Den_2,
+                                              img_bounds_DRA_Den_2,
+                                              {pane: 'pane_DRA_Den_2'});
+        bounds_group.addLayer(layer_DRA_Den_2);
+        map.addLayer(layer_DRA_Den_2);
+        map.createPane('pane_FillDem_3');
+        map.getPane('pane_FillDem_3').style.zIndex = 403;
+        var img_FillDem_3 = 'data/FillDem_3.png';
+        var img_bounds_FillDem_3 = [[17.28903526248114,78.23817238483446],[17.56350825475113,78.62323726149253]];
+        var layer_FillDem_3 = new L.imageOverlay(img_FillDem_3,
+                                              img_bounds_FillDem_3,
+                                              {pane: 'pane_FillDem_3'});
+        bounds_group.addLayer(layer_FillDem_3);
+        map.addLayer(layer_FillDem_3);
+        map.createPane('pane_RF_4');
+        map.getPane('pane_RF_4').style.zIndex = 404;
+        var img_RF_4 = 'data/RF_4.png';
+        var img_bounds_RF_4 = [[17.28914897265013,78.23832339170733],[17.56334263006747,78.62309722553069]];
+        var layer_RF_4 = new L.imageOverlay(img_RF_4,
+                                              img_bounds_RF_4,
+                                              {pane: 'pane_RF_4'});
+        bounds_group.addLayer(layer_RF_4);
+        map.addLayer(layer_RF_4);
+        function pop_MDSS_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FID_DISS'] !== null ? autolinker.link(feature.properties['FID_DISS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AREA'] !== null ? autolinker.link(feature.properties['AREA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME'] !== null ? autolinker.link(feature.properties['NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_MDSS_5_0() {
+            return {
+                pane: 'pane_MDSS_5',
+                opacity: 1,
+                color: 'rgba(177,50,11,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_MDSS_5');
+        map.getPane('pane_MDSS_5').style.zIndex = 405;
+        map.getPane('pane_MDSS_5').style['mix-blend-mode'] = 'normal';
+        var layer_MDSS_5 = new L.geoJson(json_MDSS_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_MDSS_5',
+            layerName: 'layer_MDSS_5',
+            pane: 'pane_MDSS_5',
+            onEachFeature: pop_MDSS_5,
+            style: style_MDSS_5_0,
+        });
+        bounds_group.addLayer(layer_MDSS_5);
+        map.addLayer(layer_MDSS_5);
+        map.createPane('pane_2020_6');
+        map.getPane('pane_2020_6').style.zIndex = 406;
+        var img_2020_6 = 'data/2020_6.png';
+        var img_bounds_2020_6 = [[17.291581072488256,78.2385900073329],[17.561075657724114,78.622619791294]];
+        var layer_2020_6 = new L.imageOverlay(img_2020_6,
+                                              img_bounds_2020_6,
+                                              {pane: 'pane_2020_6'});
+        bounds_group.addLayer(layer_2020_6);
+        map.addLayer(layer_2020_6);
+        map.createPane('pane_SOIL_RAS_reclass_7');
+        map.getPane('pane_SOIL_RAS_reclass_7').style.zIndex = 407;
+        var img_SOIL_RAS_reclass_7 = 'data/SOIL_RAS_reclass_7.png';
+        var img_bounds_SOIL_RAS_reclass_7 = [[17.29163770000008,78.23870670000008],[17.560832100000034,78.62203952560002]];
+        var layer_SOIL_RAS_reclass_7 = new L.imageOverlay(img_SOIL_RAS_reclass_7,
+                                              img_bounds_SOIL_RAS_reclass_7,
+                                              {pane: 'pane_SOIL_RAS_reclass_7'});
+        bounds_group.addLayer(layer_SOIL_RAS_reclass_7);
+        map.addLayer(layer_SOIL_RAS_reclass_7);
+        var baseMaps = {};
+        var overlaysTree = [
+            {label: "SOIL_RAS_reclass", layer: layer_SOIL_RAS_reclass_7},
+            {label: "2020", layer: layer_2020_6},
+            {label: '<img src="legend/MDSS_5.png" /> MDSS', layer: layer_MDSS_5},
+            {label: "RF", layer: layer_RF_4},
+            {label: "FillDem", layer: layer_FillDem_3},
+            {label: "DRA_Den", layer: layer_DRA_Den_2},
+            {label: "GW_2020_CLC", layer: layer_GW_2020_CLC_1},
+            {label: "OpenStreetMap", layer: layer_OpenStreetMap_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        </script>
+    </body>
+</html>
